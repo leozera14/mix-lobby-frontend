@@ -1,0 +1,12 @@
+.player-item {
+  transition: all ease-in-out 200ms;
+}
+
+.player-item:not(:hover) {
+  opacity: 0.85;
+}
+
+.player-item:hover {
+  scale: 1.1;
+  font-weight: bold;
+}
