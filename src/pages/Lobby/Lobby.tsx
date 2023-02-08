@@ -14,6 +14,7 @@ import { IFetchPlayerRequest, IPlayerProps } from "../../types";
 import { DeleteIcon } from "@chakra-ui/icons";
 import "./lobby.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Lobby = () => {
   const navigate = useNavigate();
@@ -32,12 +33,23 @@ export const Lobby = () => {
     refetchInterval: 300000, //5 minutes
   }) as IFetchPlayerRequest;
 
+  //Usefull consts and function for validation or usefull values
+  const verifyIfPlayerIsSelected = (playerId: number) => {
+    return Boolean(
+      playersSelected.find((pSelected) => pSelected.id === playerId)
+    );
+  };
+
   const filteredPlayers =
     searchInput.length > 0 && allPlayers.length > 0
       ? allPlayers.filter((players) =>
           players.name.toLowerCase().includes(searchInput.toLowerCase())
         )
       : allPlayers;
+
+  const gridRowsCalculated = Math.ceil(allPlayers?.length / 6);
+
+  const limitOfPlayersSelected = Boolean(playersSelected.length === 10);
 
   //Functions to Add and Remove player
   const addSelectedPlayer = (addPlayer: IPlayerProps) => {
@@ -49,6 +61,12 @@ export const Lobby = () => {
   const handleAddSelectedPlayer = useCallback(
     (addPlayer: IPlayerProps) => {
       setPlayersSelected((prevState) => [...prevState, addPlayer]);
+      toast.success(`${addPlayer.name} adicionado!`);
+
+      //Here the +1 is to validate the new length, because at this time the playersSelected length wont be updated, will be 9 yet
+      if (playersSelected.length + 1) {
+        toast.info("Maximo de players selecionados, pode gerar essa merda!");
+      }
     },
     [addSelectedPlayer]
   );
@@ -68,22 +86,11 @@ export const Lobby = () => {
 
         return prevState;
       });
+
+      toast.warning(`${removePlayer.name} removido!`);
     },
     [removeSelectedPlayer]
   );
-
-  //Usefull consts and function for validation or usefull values
-  const verifyIfPlayerIsSelected = (playerId: number) => {
-    return Boolean(
-      playersSelected.find((pSelected) => pSelected.id === playerId)
-    );
-  };
-
-  const gridRowsCalculated = Math.ceil(allPlayers?.length / 6);
-
-  const limitOfPlayersSelected = Boolean(playersSelected.length === 10);
-
-  console.log(limitOfPlayersSelected);
 
   return (
     <Flex w="100%" flexDirection="column">
@@ -112,6 +119,7 @@ export const Lobby = () => {
                   alignItems="center"
                   justifyContent="center"
                   mt="0.625rem"
+                  gap="0.625rem"
                 >
                   <Tooltip
                     label={
