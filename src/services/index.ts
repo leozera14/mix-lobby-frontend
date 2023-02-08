@@ -1,1 +1,1 @@
-export * from "./fetchPlayers";
+export * from "./players";

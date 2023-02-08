@@ -7,4 +7,6 @@ export interface IPlayerProps {
 export interface IFetchPlayerRequest {
   data: IPlayerProps[];
   isLoading: boolean;
+  error: unknown;
+  isSuccess: boolean;
 }
